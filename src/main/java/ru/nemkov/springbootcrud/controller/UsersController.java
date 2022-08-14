@@ -55,6 +55,7 @@ public class UsersController {
                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) return "/edit";
         userService.updateUser(user);
+        System.out.println(userService.findByUsername("user").getUsername());
         return "redirect:/";
     }
 
