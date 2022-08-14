@@ -1,4 +1,4 @@
-package ru.nemkov.springbootcrud.service.repository;
+package ru.nemkov.springbootcrud.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.nemkov.springbootcrud.model.User;

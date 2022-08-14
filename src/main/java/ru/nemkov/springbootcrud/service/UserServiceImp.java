@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.nemkov.springbootcrud.model.Role;
 import ru.nemkov.springbootcrud.model.User;
-import ru.nemkov.springbootcrud.service.repository.UserRepository;
+import ru.nemkov.springbootcrud.repository.UserRepository;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
