@@ -2,11 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Edit user</title>
+    <title>New user</title>
 </head>
 <body>
 
-<form th:method="PATCH" th:action="@{/{id}(id=${user.getId()})}" th:object="${user}">
+<form th:method="POST" th:action="@{/admin}" th:object="${user}">
     <label for="firstname">Enter firstname</label>
     <input type="text" th:field="*{firstname}" id="firstname"/>
     <div style="color:red" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}">error</div>
@@ -21,8 +21,10 @@
     <input type="text" th:field="*{age}" id="age"/>
     <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">error</div>
     </br>
-    <input type="submit" value="Update"/>
+    <input type="submit" value="Create"/>
 </form>
+</br>
+<a href="/logout">Logout</a>
 
 </body>
 </html>

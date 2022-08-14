@@ -13,9 +13,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column (name = "username")
+    @Column(name = "username")
     private String username;
-    @Column (name = "password")
+    @Column(name = "password")
     private String password;
     @ManyToMany
     @JoinTable(name = "users_roles",
@@ -33,7 +33,9 @@ public class User {
     @Column(name = "age")
     @Min(value = 0, message = "Age should be greater then 0")
     private byte age;
-    public User(){}
+
+    public User() {
+    }
 
     public User(String firstname, String lastname, byte age) {
         this.firstname = firstname;
@@ -89,7 +91,9 @@ public class User {
         this.lastname = lastname;
     }
 
-    public byte getAge() { return age; }
+    public byte getAge() {
+        return age;
+    }
 
     public void setAge(byte age) {
         this.age = age;

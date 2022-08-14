@@ -7,9 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.nemkov.springbootcrud.dao.UserDao;
 import ru.nemkov.springbootcrud.model.Role;
 import ru.nemkov.springbootcrud.model.User;
+import ru.nemkov.springbootcrud.service.repository.UserRepository;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
@@ -18,17 +18,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImp implements UserService, UserDetailsService {
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImp(UserDao userDao) {
-        this.userDao = userDao;
+    public UserServiceImp(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Transactional
     @Override
     public void addUser(User user) {
-        userDao.addUser(user);
+        userRepository.save(user);
     }
 
     @Override
@@ -48,29 +48,29 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     @Override
     public List<User> getUserList() {
-        return userDao.getUserList();
+        return userRepository.findAll();
     }
 
     @Override
-    @Transactional
     public User findByUsername(String username) {
-        return userDao.findByUsername(username);
+        return userRepository.findByUsername(username);
     }
 
     @Override
     public Object getUserById(Long id) {
-        return userDao.getUserById(id);
+        return userRepository.findById(id).orElse(null);
     }
 
     @Transactional
     @Override
-    public void updateUser(User user) {
-        userDao.updateUser(user);
+    public void updateUser(Long id, User updatedUser) {
+        updatedUser.setId(id);
+        userRepository.save(updatedUser);
     }
 
     @Transactional
     @Override
     public void removeUser(Long id) {
-        userDao.removeUser(id);
+        userRepository.deleteById(id);
     }
 }
