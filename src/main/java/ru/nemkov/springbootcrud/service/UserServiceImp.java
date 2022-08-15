@@ -10,13 +10,14 @@ import org.springframework.stereotype.Service;
 import ru.nemkov.springbootcrud.model.Role;
 import ru.nemkov.springbootcrud.model.User;
 import ru.nemkov.springbootcrud.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class UserServiceImp implements UserService, UserDetailsService {
     private final UserRepository userRepository;
 
