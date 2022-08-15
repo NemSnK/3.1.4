@@ -18,13 +18,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHeandler successUserHeandler;
 
     @Autowired
-    public WebSecurityConfig(SuccessUserHeandler successUserHeandler) {
-        this.successUserHeandler = successUserHeandler;
-    }
-
-    @Autowired
-    public void setUserService(UserDetailsService userService) {
+    public WebSecurityConfig(UserDetailsService userService, SuccessUserHeandler successUserHeandler) {
         this.userService = userService;
+        this.successUserHeandler = successUserHeandler;
     }
 
     @Override
