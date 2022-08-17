@@ -1,21 +1,28 @@
 package ru.nemkov.springbootcrud.model;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
-public class Role {
+public class Role /*implements GrantedAuthority*/ {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "role")
     private String name;
 
+/*    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;*/
+
     public Role() {
     }
-
-    public Role(String name) {
+    public Role(Long id, String name)
+    {
+        this.id = id;
         this.name = name;
     }
 
@@ -47,4 +54,14 @@ public class Role {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
+   @Override
+    public String toString() {
+        return name.substring(name.indexOf('_') + 1, name.length())+ " ";
+    }
+
+/*    @Override
+    public String getAuthority() {
+        return getName();
+    }*/
 }

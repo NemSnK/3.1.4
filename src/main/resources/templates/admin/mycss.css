@@ -1,0 +1,13 @@
+.tabs_block{
+	display: none;
+}
+.tab-pane{
+	display: none;
+}
+.tabs_block:target{
+	display: block;
+}
+.tab-pane:target{
+	display: block;
+}
+

@@ -1,11 +1,13 @@
 package ru.nemkov.springbootcrud.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.nemkov.springbootcrud.model.Role;
 import ru.nemkov.springbootcrud.model.User;
@@ -20,15 +22,19 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class UserServiceImp implements UserService, UserDetailsService {
     private final UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImp(UserRepository userRepository) {
+    @Lazy
+    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     @Override
     public void addUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
