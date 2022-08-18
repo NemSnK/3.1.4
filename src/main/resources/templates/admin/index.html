@@ -13,34 +13,70 @@
 
         .delete {
             width: 40%;
-            height: auto;
+            height: 85vh;
             text-align: center;
             padding: 0;
             border: 2px solid #c3c3c3;
             border-radius: 5px;
             display: none;
             position: absolute;
-            top: 0;
+            top: 20%;
             right: 0;
             bottom: 0;
             left: 0;
             margin: auto;
             background: white;
         }
-        .delete:target {display: block;}
 
+        .delete:target {
+            display: block;
+        }
+
+        .edit {
+            width: 40%;
+            height: 95vh;
+            text-align: center;
+            padding: 0;
+            border: 2px solid #c3c3c3;
+            border-radius: 5px;
+            /* display: none;*/
+            position: absolute;
+            top: 40%;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
+            background: white;
+        }
+
+        /*.edit:target {display: block;}*/
         .modalwindow {
             width: 100%;
+
             padding: 0;
             margin: 0 auto;
 
         }
+
         .head {
             width: 100%;
             height: 40px;
-            border-bottom: 2px solid #757575; /* Белая рамка */
+            border-bottom: 2px solid #757575;
         }
 
+        .foot {
+            padding: 10px;
+            margin: 10px;
+            text-align: right;
+            border-top: 2px solid #757575;
+        }
+
+        input {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            width: 250px;
+            text-align: center;
+        }
     </style>
 
 </head>
@@ -50,12 +86,12 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="color:#EBEBEB">
                 <li class="nav-item">
-                    <b><a th:text="${user.getUsername()}"> VALUE </a> </b>
+                    <b><a th:text="${princ_user.getUsername()}"> VALUE </a> </b>
                 </li>
                 <li class="nav-item">
                     <span>&nbsp; with roles: &nbsp;</span>
                 </li>
-                <li class="nav-item" th:each="role : ${user.getRoles()}">
+                <li class="nav-item" th:each="role : ${princ_user.getRoles()}">
                     <a th:text="${role.toString()}"> VALUE </a> <span> &nbsp; </span>
                 </li>
             </ul>
@@ -174,39 +210,162 @@
                                                         Roles </a>
                                                 </td>
                                                 <td>
-                                                    <div>Edit</div>
-                                                </td>
-                                                <td>
-                                                    <div class="delete" th:id="${'delete'+user.id}">
+                                                    <div class="edit" th:if="${showEdit} == true"
+                                                         th:id="${'edit'+user.id}">
                                                         <div class="modalwindow">
                                                             <div class="head">
-                                                                <h5 style="float: left; padding: 5px; margin-left: 5px">Edit user</h5>
+                                                                <h5 style="float: left; padding: 5px; margin-left: 5px">
+                                                                    Edit user</h5>
                                                                 <nav style="float: right; padding: 5px; margin-right:5px ">
-                                                                <ul style="list-style: none;">
-                                                                    <li><a style="text-decoration: none; color: #777777" href="#"><b>x</b></a></li>
-                                                                </ul>
-                                                            </nav>
+                                                                    <ul style="list-style: none;">
+                                                                        <li>
+                                                                            <a style="text-decoration: none; color: #777777"
+                                                                               href="admin/close"><b>x</b></a></li>
+                                                                    </ul>
+                                                                </nav>
                                                             </div>
                                                             <div>
-                                                                <form th:method="DELETE" th:action="@{/admin/{id}(id=${user.getId()})}">
-                                                                    <input th:type="text" th:value="${user.getId()}"/>
-                                                                    <input th:type="text" th:value="${user.getFirstname()}"/>
-                                                                    <input th:type="text" th:value="${user.getLastname()}"/>
-                                                                    <input th:type="text" th:value="${user.getAge()}"/>
-                                                                    <input th:type="text" th:value="${user.getUsername()}"/>
-                                                                    <select style="width: 300px;" size="2" multiple name="newRole">
-                                                                        <option th:each="role:${user.getRoles()}">
-                                                                            <th:block th:text="${role.toString()}"></th:block>
+                                                                <form th:action="@{admin/{id}/update(id=${user.id})}"
+                                                                      th:object="${newuser}" th:method="PUT">
+
+                                                                    <label style="margin-right: 10%"><b>Id</b></label>
+                                                                    <div><input th:type="text" readonly
+                                                                                style="background-color: #777777"
+                                                                                th:field="*{id}"/>
+                                                                    </div>
+
+                                                                    <label for="firstname"><b>First name</b></label>
+                                                                    <div><input type="text" th:field="*{firstname}"
+                                                                                id="firstname"/></div>
+                                                                    <div style="color:red"
+                                                                         th:if="${#fields.hasErrors('firstname')}"
+                                                                         th:errors="*{firstname}">error
+                                                                    </div>
+
+                                                                    <label for="lastname"><b>Last name</b></label>
+                                                                    <div><input th:field="*{lastname}" id="lastname"/>
+                                                                    </div>
+                                                                    <div style="color:red"
+                                                                         th:if="${#fields.hasErrors('lastname')}"
+                                                                         th:errors="*{lastname}">error
+                                                                    </div>
+
+                                                                    <label for="age"><b>Age</b></label>
+                                                                    <div><input th:type="text" th:field="*{age}"
+                                                                                id="age"/></div>
+                                                                    <div style="color:red"
+                                                                         th:if="${#fields.hasErrors('age')}"
+                                                                         th:errors="*{age}">error
+                                                                    </div>
+
+                                                                    <label for="age"><b>Email</b></label>
+                                                                    <div><input th:type="text" th:field="*{username}"
+                                                                                id="username"/></div>
+                                                                    <div style="color:red"
+                                                                         th:if="${#fields.hasErrors('username')}"
+                                                                         th:errors="*{username}">error
+                                                                    </div>
+
+                                                                    <label for="password"><b>Password</b></label>
+                                                                    <div><input th:type="password" name="password"
+                                                                                id="password"/></div>
+                                                                    <div style="color:red"
+                                                                         th:if="${#fields.hasErrors('password')}"
+                                                                         th:errors="*{password}">error
+                                                                    </div>
+                                                                    <label><b>Role</b></label>
+                                                                    <div><select style="width: 250px;" size="2" multiple
+                                                                                 name="newRole" required="required">
+                                                                        <option selected="selected" value="1">User
                                                                         </option>
-                                                                    </select>
-                                                                    <input th:type="submit" th:value="Delete"/>
+                                                                        <option value="2">Admin</option>
+                                                                    </select></div>
+                                                                    <div class="foot">
+                                                                        <a href="admin/close"
+                                                                           style="margin-right: 10px; text-decoration: none; appearance: none; border: 0; border-radius: 5px; background: grey; color: #fff; padding: 9px 9px; font-size: 16px;">
+                                                                            Close
+                                                                        </a>
+                                                                        <button type="submit"
+                                                                                style=" appearance: none; border: 0; border-radius: 5px; background: blue; color: #fff; padding: 8px 16px; font-size: 16px;">
+                                                                            Edit
+                                                                        </button>
+                                                                    </div>
                                                                 </form>
                                                             </div>
                                                         </div>
 
                                                     </div>
-                                                    <a href="#delete" th:href="${'#delete'+user.id}">Delete</a>
-
+                                                    <a th:href="@{/admin/{id}/edit(id=${user.id})}"
+                                                       style="margin-right: 10px; text-decoration: none; appearance: none;
+                                                        border: 0; border-radius: 5px; background: lightskyblue; color: #fff; padding: 4px 4px; font-size: 10px;">
+                                                        Edit</a>
+                                                </td>
+                                                <td>
+                                                    <div class="delete" th:id="${'delete'+user.id}">
+                                                        <div class="modalwindow">
+                                                            <div class="head">
+                                                                <h5 style="float: left; padding: 5px; margin-left: 5px">
+                                                                    Delete</h5>
+                                                                <nav style="float: right; padding: 5px; margin-right:5px ">
+                                                                    <ul style="list-style: none;">
+                                                                        <li>
+                                                                            <a style="text-decoration: none; color: #777777"
+                                                                               href="#"><b>x</b></a></li>
+                                                                    </ul>
+                                                                </nav>
+                                                            </div>
+                                                            <div>
+                                                                <form th:method="DELETE"
+                                                                      th:action="@{/admin/{id}(id=${user.getId()})}">
+                                                                    <div><label
+                                                                            style="margin-right: 5%"><b>Id</b></label>
+                                                                    </div>
+                                                                    <input th:type="text"
+                                                                           style="background-color: #777777" readonly
+                                                                           th:value="${user.getId()}"/>
+                                                                    <div><label><b>First name</b></label></div>
+                                                                    <input th:type="text"
+                                                                           style="background-color: #777777" readonly
+                                                                           th:value="${user.getFirstname()}"/>
+                                                                    <div><label><b>Last name</b></label></div>
+                                                                    <input th:type="text"
+                                                                           style="background-color: #777777" readonly
+                                                                           th:value="${user.getLastname()}"/>
+                                                                    <div><label><b>Age</b></label></div>
+                                                                    <input th:type="text"
+                                                                           style="background-color: #777777" readonly
+                                                                           th:value="${user.getAge()}"/>
+                                                                    <div><label><b>Email</b></label></div>
+                                                                    <input th:type="text"
+                                                                           style="background-color: #777777" readonly
+                                                                           th:value="${user.getUsername()}"/>
+                                                                    <div><label><b>Role</b></label></div>
+                                                                    <select style="width: 250px; background-color: #777777;"
+                                                                            size="2" multiple readonly
+                                                                            name="newRole">
+                                                                        <option th:each="role:${user.getRoles()}">
+                                                                            <th:block
+                                                                                    th:text="${role.toString()}"></th:block>
+                                                                        </option>
+                                                                    </select>
+                                                                    <div class="foot">
+                                                                        <a href="admin/close"
+                                                                           style="margin-right: 10px; text-decoration: none; appearance: none; border: 0; border-radius: 5px; background: grey; color: #fff; padding: 10px 9px; font-size: 16px;">
+                                                                            Close
+                                                                        </a>
+                                                                        <button type="submit"
+                                                                                style=" appearance: none; border: 0; border-radius: 5px; background: red; color: #fff; padding: 8px 16px; font-size: 16px;">
+                                                                            Delete
+                                                                        </button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <a href="#delete" th:href="${'#delete'+user.id}"
+                                                       style="margin-right: 10px; text-decoration: none; appearance: none;
+                                                        border: 0; border-radius: 5px; background: red; color: #fff; padding: 4px 4px; font-size: 10px;">
+                                                        Delete</a>
                                                 </td>
                                             </tr>
 
@@ -230,17 +389,21 @@
                                 <tbody>
                                 <tr>
                                     <td>
-                                        <form style="text-align: center;" th:method="POST" th:action="@{/admin}" th:object="${newuser}">
+                                        <form style="text-align: center;" th:method="POST" th:action="@{/admin}"
+                                              th:object="${newuser}">
 
                                             <div style=""><label for="firstname"><b>First name</b></label></div>
-                                            <div><input style="width: 300px; text-align: center;" type="text" th:field="*{firstname}"
+                                            <div><input style="width: 300px; text-align: center;" type="text"
+                                                        th:field="*{firstname}"
                                                         id="firstname"/></div>
                                             <div style="color:red" th:if="${#fields.hasErrors('firstname')}"
                                                  th:errors="*{firstname}">error
                                             </div>
 
-                                            <div style="margin-top: 15px;"><label for="lastname"><b>Last name</b></label></div>
-                                            <div><input style="width: 300px; text-align: center;" type="text" th:field="*{lastname}"
+                                            <div style="margin-top: 15px;"><label for="lastname"><b>Last
+                                                name</b></label></div>
+                                            <div><input style="width: 300px; text-align: center;" type="text"
+                                                        th:field="*{lastname}"
                                                         id="lastname"/></div>
                                             <div style="color:red" th:if="${#fields.hasErrors('lastname')}"
                                                  th:errors="*{lastname}">error
@@ -248,7 +411,8 @@
 
                                             <div style="margin-top: 15px;"><label for="Age"><b>Age</b></label>
                                             </div>
-                                            <div><input style="width: 300px; text-align: center;" type="text" th:field="*{age}" id="age"/>
+                                            <div><input style="width: 300px; text-align: center;" type="text"
+                                                        th:field="*{age}" id="age"/>
                                             </div>
                                             <div style="color:red" th:if="${#fields.hasErrors('age')}"
                                                  th:errors="*{age}">error
@@ -256,7 +420,8 @@
 
                                             <div style="margin-top: 15px;"><label for="username"><b>Email</b></label>
                                             </div>
-                                            <div><input style="width: 300px; text-align: center;" type="text" th:field="*{username}" id="username"/>
+                                            <div><input style="width: 300px; text-align: center;" type="text"
+                                                        th:field="*{username}" id="username"/>
                                             </div>
                                             <div style="color:red" th:if="${#fields.hasErrors('username')}"
                                                  th:errors="*{username}">error
@@ -268,13 +433,15 @@
 
                                             <div style="margin-top: 15px;"><label for="password"><b>Password</b></label>
                                             </div>
-                                            <div><input style="width: 300px; text-align: center;" type="password" th:field="*{password}" id="password"/>
+                                            <div><input style="width: 300px; text-align: center;" type="password"
+                                                        th:field="*{password}" id="password"/>
                                             </div>
                                             <div style="color:red" th:if="${#fields.hasErrors('password')}"
                                                  th:errors="*{password}">error
                                             </div>
                                             <div style="margin-top: 15px;">
-                                                <select style="width: 300px;" size="2" multiple name="newRole" required="required">
+                                                <select style="width: 300px;" size="2" multiple name="newRole"
+                                                        required="required">
                                                     <option selected="selected" value="1">User</option>
                                                     <option value="2">Admin</option>
                                                 </select>

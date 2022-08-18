@@ -63,7 +63,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
-    public Object getUserById(Long id) {
+    public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
@@ -71,6 +71,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Override
     public void updateUser(Long id, User updatedUser) {
         updatedUser.setId(id);
+        updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         userRepository.save(updatedUser);
     }
 

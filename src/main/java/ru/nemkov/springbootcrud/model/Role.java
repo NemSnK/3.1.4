@@ -15,13 +15,10 @@ public class Role /*implements GrantedAuthority*/ {
     @Column(name = "role")
     private String name;
 
-/*    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;*/
-
     public Role() {
     }
-    public Role(Long id, String name)
-    {
+
+    public Role(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -55,13 +52,8 @@ public class Role /*implements GrantedAuthority*/ {
         return Objects.hash(id, name);
     }
 
-   @Override
+    @Override
     public String toString() {
-        return name.substring(name.indexOf('_') + 1, name.length())+ " ";
+        return name.substring(name.indexOf('_') + 1, name.length()) + " ";
     }
-
-/*    @Override
-    public String getAuthority() {
-        return getName();
-    }*/
 }
