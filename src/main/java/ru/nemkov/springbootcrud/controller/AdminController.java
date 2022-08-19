@@ -28,7 +28,7 @@ public class AdminController {
 
 
     @GetMapping("/admin")
-    public String showAllUsers(Principal principal, Model model/* @RequestParam(defaultValue = "1") int page*/) {
+    public String showAllUsers(Principal principal, Model model) {
         model.addAttribute("user", userService.findByUsername(principal.getName()));
         model.addAttribute("users", userService.getUserList());
         return "admin/index";
@@ -41,7 +41,7 @@ public class AdminController {
         return "admin/newUser";
     }
 
-    //Добавление нового пользователя
+
     @PostMapping("/new")
     public String createUser(@ModelAttribute("user") @Valid User user,
                              BindingResult bindingResult, Long role, Principal principal, Model model) {
