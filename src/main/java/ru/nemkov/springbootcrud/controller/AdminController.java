@@ -14,10 +14,8 @@ import java.security.Principal;
 import java.util.Collections;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping()
 public class AdminController {
-    private boolean showEdit = false;
-    private User editUser;
     private final RoleService roleService;
     private final UserService userService;
 
@@ -28,77 +26,49 @@ public class AdminController {
         this.userService = userService;
     }
 
-    //Главная страница
-    @GetMapping()
-    public String showAllUsers(Principal principal, Model model, @RequestParam(defaultValue = "1") int page) {
-        model.addAttribute("princ_user", userService.findByUsername(principal.getName()));
-        model.addAttribute("showEdit", showEdit);
-        model.addAttribute("page", page);
-        if (page == 2) {
-            model.addAttribute("newuser", new User());
-        } else {
-            model.addAttribute("newuser", editUser);
-        }
+
+    @GetMapping("/admin")
+    public String showAllUsers(Principal principal, Model model/* @RequestParam(defaultValue = "1") int page*/) {
+        model.addAttribute("user", userService.findByUsername(principal.getName()));
         model.addAttribute("users", userService.getUserList());
         return "admin/index";
     }
 
+    @GetMapping("/add")
+    public String showUserAddForm(Principal principal, Model model) {
+        model.addAttribute("principal_user", userService.findByUsername(principal.getName()));
+        model.addAttribute("user", new User());
+        return "admin/newUser";
+    }
+
     //Добавление нового пользователя
-    @PostMapping()
-    public String createUser(Principal principal, Model model, @ModelAttribute("newuser") @Valid User user,
-                             BindingResult bindingResult, Long newRole) {
+    @PostMapping("/new")
+    public String createUser(@ModelAttribute("user") @Valid User user,
+                             BindingResult bindingResult, Long role, Principal principal, Model model) {
 
-        if (userService.findByUsername(user.getUsername()) != null) {
-            model.addAttribute("existedUsername", user.getUsername());
-            model.addAttribute("princ_user", userService.findByUsername(principal.getName()));
-            model.addAttribute("page", 2);
-            return "admin/index";
-        }
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("princ_user", userService.findByUsername(principal.getName()));
-            model.addAttribute("page", 2);
-            return "admin/index";
+        if (userService.findByUsername(user.getUsername()) != null || bindingResult.hasErrors()) {
+            model.addAttribute("principal_user", userService.findByUsername(principal.getName()));
+            return "admin/newUser";
         }
 
-        user.setRoles(Collections.singleton(roleService.getRoleById(newRole)));
+        user.setRoles(Collections.singleton(roleService.getRoleById(role)));
         userService.addUser(user);
         return "redirect:/admin";
     }
 
-    //Удаление пользователя
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public String deleteUser(@PathVariable("id") Long id) {
+        System.out.println(userService.getUserById(id));
         userService.removeUser(id);
         return "redirect:/admin";
     }
 
-    //Изменение пользователя
     @PutMapping("/{id}/update")
-    public String updateUser(Principal principal, Model model, @ModelAttribute("newuser") @Valid User user,
-                             BindingResult bindingResult, @PathVariable("id") Long id,
-                             Long newRole, String password) {
-        if (bindingResult.hasErrors()) {
-            return "redirect:/admin";
-
-        }
-        user.setPassword(password);
-        user.setRoles(Collections.singleton(roleService.getRoleById(newRole)));
+    public String updateUser(@ModelAttribute("user") User user,
+                             @PathVariable("id") Long id,
+                             Long role, String password) {
+        user.setRoles(Collections.singleton(roleService.getRoleById(role)));
         userService.updateUser(id, user);
-        showEdit = false;
-        return "redirect:/admin";
-    }
-
-    //Костыли
-    @GetMapping("/{id}/edit")
-    public String showEditUserForm(Model model, @PathVariable("id") Long id) {
-        showEdit = true;
-        editUser = userService.getUserById(id);
-        return "redirect:/admin";
-    }
-
-    @GetMapping("/close")
-    public String closeEditUserForm() {
-        showEdit = false;
         return "redirect:/admin";
     }
 }
