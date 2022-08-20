@@ -42,7 +42,7 @@
                     <div class="tab-content" id="tabContent">
                         <ul class="nav nav-tabs">
                             <a class="nav-link active" data-toggle="tab">Users Table</a>
-                            <a class="nav-link" data-toggle="tab" th:href="@{/add}">New User</a>
+                            <a class="nav-link" data-toggle="tab" th:href="@{admin/add}">New User</a>
                         </ul>
                         <div class="card">
                             <div class="card-header">
@@ -87,7 +87,7 @@
                                                th:data-bs-target="${'#DELETE'+user.getId()}">Delete</a>
                                         </td>
 
-                                        <div class="modal fade" th:if="${showEdit}==true" th:id="${'editModal'+user.id}"
+                                        <div class="modal fade" th:id="${'editModal'+user.id}"
                                              aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" modal-dialog-centered>
                                                 <div class="modal-content">
@@ -97,7 +97,7 @@
                                                                 aria-label="Close"></button>
                                                     </div>
 
-                                                    <form th:action="@{/{id}/update(id=${user.getId()})}"
+                                                    <form th:action="@{admin/{id}/update(id=${user.getId()})}"
                                                           th:object="${user}" th:method="PUT">
                                                         <div class="modal-body col-md text-center">
                                                             <br>
@@ -164,7 +164,7 @@
                                                     </div>
 
                                                     <form class="modal-body col-md text-center"
-                                                          th:action="@{/{id}/delete(id=${user.getId()})}"
+                                                          th:action="@{admin/{id}/delete(id=${user.getId()})}"
                                                           th:method="DELETE">
                                                         <div class="modal-body text-center col-md">
                                                             <label for="id"><b>ID</b></label>

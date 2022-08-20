@@ -14,9 +14,8 @@ import java.security.Principal;
 import java.util.Collections;
 
 @Controller
-@RequestMapping()
+@RequestMapping("/admin")
 public class AdminController {
-    private boolean showEdit = true;
     private final RoleService roleService;
     private final UserService userService;
 
@@ -28,9 +27,8 @@ public class AdminController {
     }
 
 
-    @GetMapping("/admin")
+    @GetMapping("")
     public String showAllUsers(Principal principal, Model model) {
-        model.addAttribute("showEdit", showEdit);
         model.addAttribute("user", userService.findByUsername(principal.getName()));
         model.addAttribute("users", userService.getUserList());
         return "admin/index";
@@ -44,13 +42,12 @@ public class AdminController {
     }
 
 
-    @PostMapping("/new")
+    @PostMapping("admin/new")
     public String createUser(@ModelAttribute("user") @Valid User user,
                              BindingResult bindingResult, Long role, Principal principal, Model model) {
 
         if (userService.findByUsername(user.getUsername()) != null || bindingResult.hasErrors()) {
-            model.addAttribute("principal_user", userService.findByUsername(principal.getName()));
-            return "admin/newUser";
+            return "redirect:/admin/add";
         }
 
         user.setRoles(Collections.singleton(roleService.getRoleById(role)));
@@ -70,7 +67,7 @@ public class AdminController {
                              @PathVariable("id") Long id, Long role, String password) {
         user.setRoles(Collections.singleton(roleService.getRoleById(role)));
         if ((userService.findByUsername(user.getUsername()) != null &&
-                userService.findByUsername(user.getUsername()).getId() != user.getId() )
+                userService.findByUsername(user.getUsername()).getId() != user.getId())
                 || bindingResult.hasErrors()) {
             return "redirect:/admin";
         }
