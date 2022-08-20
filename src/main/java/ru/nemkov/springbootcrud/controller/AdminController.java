@@ -16,6 +16,7 @@ import java.util.Collections;
 @Controller
 @RequestMapping()
 public class AdminController {
+    private boolean showEdit = true;
     private final RoleService roleService;
     private final UserService userService;
 
@@ -29,6 +30,7 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String showAllUsers(Principal principal, Model model) {
+        model.addAttribute("showEdit", showEdit);
         model.addAttribute("user", userService.findByUsername(principal.getName()));
         model.addAttribute("users", userService.getUserList());
         return "admin/index";
@@ -64,10 +66,14 @@ public class AdminController {
     }
 
     @PutMapping("/{id}/update")
-    public String updateUser(@ModelAttribute("user") User user,
-                             @PathVariable("id") Long id,
-                             Long role, String password) {
+    public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
+                             @PathVariable("id") Long id, Long role, String password) {
         user.setRoles(Collections.singleton(roleService.getRoleById(role)));
+        if ((userService.findByUsername(user.getUsername()) != null &&
+                userService.findByUsername(user.getUsername()).getId() != user.getId() )
+                || bindingResult.hasErrors()) {
+            return "redirect:/admin";
+        }
         userService.updateUser(id, user);
         return "redirect:/admin";
     }

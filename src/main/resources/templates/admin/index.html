@@ -87,7 +87,7 @@
                                                th:data-bs-target="${'#DELETE'+user.getId()}">Delete</a>
                                         </td>
 
-                                        <div class="modal fade" th:id="${'editModal'+user.id}"
+                                        <div class="modal fade" th:if="${showEdit}==true" th:id="${'editModal'+user.id}"
                                              aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" modal-dialog-centered>
                                                 <div class="modal-content">
