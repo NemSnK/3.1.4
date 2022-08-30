@@ -51,7 +51,7 @@ public class AdminController {
         }
 
         user.setRoles(Collections.singleton(roleService.getRoleById(role)));
-        userService.addUser(user);
+        userService.saveOrUpdateUser(user);
         return "redirect:/admin";
     }
 
@@ -71,7 +71,7 @@ public class AdminController {
                 || bindingResult.hasErrors()) {
             return "redirect:/admin";
         }
-        userService.updateUser(id, user);
+        userService.saveOrUpdateUser(user);
         return "redirect:/admin";
     }
 }

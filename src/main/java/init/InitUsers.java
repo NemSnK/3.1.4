@@ -26,7 +26,7 @@ public class InitUsers {
     @EventListener(ApplicationReadyEvent.class)
     public void initialization(){
 
-        Set<Role>  role= new HashSet<>();
+       /* Set<Role>  role= new HashSet<>();
         role.add(new Role(1L, "ROLE_USER"));
         role.add(new Role(2L, "ROLE_ADMIN"));
 
@@ -45,6 +45,6 @@ public class InitUsers {
         userService.addUser(user);
         userService.addUser(admin);
         userService.addUser(duoRoles);
-        System.out.println("End init");
+        System.out.println("End init");*/
     }
 }
