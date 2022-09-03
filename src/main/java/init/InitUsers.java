@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Component
 public class InitUsers {
-/*
+
   private final UserService userService;
   private final RoleService roleService;
     @Autowired
@@ -46,5 +46,5 @@ public class InitUsers {
         userService.saveOrUpdateUser(admin);
         userService.saveOrUpdateUser(duoRoles);
         System.out.println("End init");
-    }*/
+    }
 }
