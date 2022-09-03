@@ -17,12 +17,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userService;
-    private final SuccessUserHeandler successUserHeandler;
+    private final SuccessUserHandler successUserHandler;
 
     @Autowired
-    public WebSecurityConfig(UserDetailsService userService, SuccessUserHeandler successUserHeandler) {
+    public WebSecurityConfig(UserDetailsService userService, SuccessUserHandler successUserHandler) {
         this.userService = userService;
-        this.successUserHeandler = successUserHeandler;
+        this.successUserHandler = successUserHandler;
     }
 
     @Override
@@ -31,16 +31,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/login").anonymous()
-                .antMatchers( "/**").authenticated()
-                .antMatchers( "/api/**").permitAll()
-                //.antMatchers( "/**","/api/**").authenticated()
-                //.antMatchers("/admin/**").hasRole("ADMIN")
-                //.antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login").loginProcessingUrl("/process_login")
-                .successHandler(successUserHeandler)
+                .successHandler(successUserHandler)
                 .and()
                 .logout().logoutSuccessUrl("/");
     }
