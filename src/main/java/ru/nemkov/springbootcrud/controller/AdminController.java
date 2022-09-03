@@ -13,8 +13,8 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Collections;
 
-@Controller
-@RequestMapping("/admin")
+//@Controller
+//@RequestMapping("/admin")
 public class AdminController {
     private final RoleService roleService;
     private final UserService userService;

@@ -9,19 +9,18 @@ import ru.nemkov.springbootcrud.service.UserService;
 
 import java.security.Principal;
 
-//@Controller
-//@RequestMapping("/user")
-public class UserController {
+@Controller
+@RequestMapping("/index")
+public class IndexPageController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public IndexPageController(UserService userService) {
         this.userService = userService;
     }
-
     @GetMapping
     public String showUser(Principal principal, Model model) {
         model.addAttribute("user", userService.findByUsername(principal.getName()));
-        return "user/show";
+        return "/index";
     }
 }

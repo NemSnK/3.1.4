@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-//@ControllerAdvice
+@ControllerAdvice
 public class UserGlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<UserIncorrectData> handleExcaption(NoSuchUserException e) {

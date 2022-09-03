@@ -22,10 +22,10 @@ public class RESTController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping()
     @CrossOrigin
-    public List<User> getUsers() {
-        return userService.getUserList();
+    public ResponseEntity<List<User>> getUsers() {
+        return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -40,38 +40,36 @@ public class RESTController {
 
     @PostMapping()
     @CrossOrigin
-    public ResponseEntity<HttpStatus> createUser(@RequestBody @Valid User user,
+    public ResponseEntity<List<User>> createUser(@RequestBody @Valid User user,
                                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             System.out.println("!!!Has errors!!!");
         }
         System.out.println(user);
-        //userService.saveOrUpdateUser(user);
-        return ResponseEntity.ok(HttpStatus.OK);
+        userService.saveOrUpdateUser(user);
+        return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
 
     @PutMapping()
     @CrossOrigin
-    public ResponseEntity<HttpStatus> updateUser(@RequestBody @Valid User user,
-                           BindingResult bindingResult) {
-        System.out.println("I'm here!!!!");
+    public ResponseEntity<List<User>> updateUser(@RequestBody @Valid User user,
+                                                 BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             System.out.println("!!!Has errors!!!");
         }
-        System.out.println(user);
-        //userService.saveOrUpdateUser(user);
-        return ResponseEntity.ok(HttpStatus.OK);
+        userService.saveOrUpdateUser(user);
+        return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     @CrossOrigin
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id){
+    public ResponseEntity<List<User>> deleteUser(@PathVariable Long id) {
         User user = userService.getUserById(id);
         if (user == null) {
             throw new NoSuchUserException(String.format("There is no user with ID = %d in Database", id));
         }
         userService.removeUser(id);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
 
 }
