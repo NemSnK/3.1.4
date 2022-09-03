@@ -33,14 +33,15 @@ const deleteEmail = document.getElementById('email1')
 const deletePassword = document.getElementById('password1')
 const deleteRoles = document.getElementById('option1')                
 //Заполнение таблицы пользователей
-fetch(url).then(
-    response=>{
-        response.json().then(
-            data=>{
+function showUser() {
+    fetch(url).then(
+        response => {
+            response.json().then(
+                data => {
                     let output = ""
                     data.forEach(el => {
-                        
-                        output+= `
+
+                        output += `
                         <tr class="text-center">
                             <th>${el.id}</th>
                             <th>${el.firstname}</th>
@@ -50,15 +51,16 @@ fetch(url).then(
                             <th>${el.roles.map(e => " " + e.name.substring(5))}</th>
                             <th><a class="btnEdit btn btn-sm btn-primary">Edit</a></th>
                             <th><a class="btnDelete btn btn-sm btn-danger">Delete</a></th>
-                        </tr>`                                              
+                        </tr>`
                     })
                     postList.innerHTML = output
-                            
-            }
-        )
-    }
-)
 
+                }
+            )
+        }
+    )
+}
+showUser()
 //Обработчик событий
  const on = (element, event, selector, hendler) => {
     element.addEventListener(event, e => {
@@ -151,10 +153,13 @@ formEdit.addEventListener('submit', (e)=>{
     })  
     .then( response =>{response.json().then(
         data=>{
+            if ('info' in data) {
+                alert(data.info)
+            }else {
                 let output = ""
                 data.forEach(el => {
-                    
-                    output+= `
+                    console.log(data)
+                    output += `
                     <tr class="text-center">
                         <th>${el.id}</th>
                         <th>${el.firstname}</th>
@@ -164,13 +169,13 @@ formEdit.addEventListener('submit', (e)=>{
                         <th>${el.roles.map(e => " " + e.name.substring(5))}</th>
                         <th><a class="btnEdit btn btn-sm btn-primary">Edit</a></th>
                         <th><a class="btnDelete btn btn-sm btn-danger">Delete</a></th>
-                    </tr>`                                              
+                    </tr>`
                 })
                 postList.innerHTML = output
-                        
+                editModal.hide()
+            }
         }
     )})
-    editModal.hide()
 })
 //Отправка POST
 formNew.addEventListener('submit', (e)=>{
@@ -192,26 +197,34 @@ formNew.addEventListener('submit', (e)=>{
     })  
     .then( response =>{response.json().then(
         data=>{
-                let output = ""
-                data.forEach(el => {
-                    
-                    output+= `
-                    <tr class="text-center">
-                        <th>${el.id}</th>
-                        <th>${el.firstname}</th>
-                        <th>${el.lastname}</th>
-                        <th>${el.age}</th>
-                        <th>${el.username}</th>
-                        <th>${el.roles.map(e => " " + e.name.substring(5))}</th>
-                        <th><a class="btnEdit btn btn-sm btn-primary">Edit</a></th>
-                        <th><a class="btnDelete btn btn-sm btn-danger">Delete</a></th>
-                    </tr>`                                              
-                })
-                postList.innerHTML = output
-                        
+                if ('info' in data) {
+                    alert(data.info)
+                }else {
+                    let output = ""
+                    data.forEach(el => {
+                        output+= `
+                        <tr class="text-center">
+                            <th>${el.id}</th>
+                            <th>${el.firstname}</th>
+                            <th>${el.lastname}</th>
+                            <th>${el.age}</th>
+                            <th>${el.username}</th>
+                            <th>${el.roles.map(e => " " + e.name.substring(5))}</th>
+                            <th><a class="btnEdit btn btn-sm btn-primary">Edit</a></th>
+                            <th><a class="btnDelete btn btn-sm btn-danger">Delete</a></th>
+                        </tr>`
+                    })
+                    postList.innerHTML = output
+                    newFirstName.value=""
+                    newLastName.value=""
+                    newAge.value=""
+                    newEmail.value=""
+                    newPassword.value=""
+                    newRoles.value =""
+                    tabUserTable.show()
+                }
         }
     )})
-    tabUserTable.show() 
 })
 //Вспомогательная функция для заполнения ролей в JSON
 function getUserRoles(number){
@@ -221,50 +234,3 @@ function getUserRoles(number){
         return [{id: 1, name: 'ROLE_USER'}]    
     }
 }
-/* let roleList = [
-    {id: 1, role: "ROLE_USER"},
-    {id: 2, role: "ROLE_ADMIN"}
-]
-let isUser = true;
-
-$(async function () {
-    await getUser();
-    await infoUser();
-    await tittle();
-    await getUsers();
-    await getNewUserForm();
-    await getDefaultModal();
-    await createUser();
-
-})
-
-const userFetch = {
-    head: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Referer': null
-    },
-    findAllUsers: async () => await fetch('http://localhost:8080/api/'),
-    findUserByUsername: async () => await fetch(`api/user`),
-    findOneUser: async (id) => await fetch(`api/users/${id}`),
-    addNewUser: async (user) => await fetch('api/users', {method: 'POST', headers: userFetch.head, body: JSON.stringify(user)}),
-    updateUser: async (user, id) => await fetch(`api/users/${id}`, {method: 'PUT', headers: userFetch.head, body: JSON.stringify(user)}),
-    deleteUser: async (id) => await fetch(`api/users/${id}`, {method: 'DELETE', headers: userFetch.head})
-}
-
-async function infoUser() {
-    let temp = '';
-    const info = document.querySelector('#info');
-    await userFetch.findUserByUsername()
-        .then(res => res.json())
-        .then(user => {
-            temp += `
-             <span style="color: white">
-               ${user.username} with roles <span>${user.roles.map(e => " " + e.role.substr(5))}</span>
-                </div>
-            </span>
-                </tr>
-            `;
-        });
-    info.innerHTML = temp;
-} */

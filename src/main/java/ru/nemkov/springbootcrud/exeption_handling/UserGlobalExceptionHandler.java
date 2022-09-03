@@ -8,13 +8,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class UserGlobalExceptionHandler {
     @ExceptionHandler
-    public ResponseEntity<UserIncorrectData> handleExcaption(NoSuchUserException e) {
+    public ResponseEntity<UserIncorrectData> handleException(ValidationUserException e) {
+        UserIncorrectData data = new UserIncorrectData();
+        data.setInfo(e.getMessage());
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler
+    public ResponseEntity<UserIncorrectData> handleException(NoSuchUserException e) {
         UserIncorrectData data = new UserIncorrectData();
         data.setInfo(e.getMessage());
         return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler
-    public ResponseEntity<UserIncorrectData> handleExcaption(Exception e) {
+    public ResponseEntity<UserIncorrectData> handleException(Exception e) {
         UserIncorrectData data = new UserIncorrectData();
         data.setInfo(e.getMessage());
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);

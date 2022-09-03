@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.nemkov.springbootcrud.exeption_handling.NoSuchUserException;
+import ru.nemkov.springbootcrud.exeption_handling.ValidationUserException;
 import ru.nemkov.springbootcrud.model.User;
 import ru.nemkov.springbootcrud.service.UserService;
 
@@ -44,8 +45,8 @@ public class RESTController {
     @CrossOrigin
     public ResponseEntity<List<User>> createUser(@RequestBody @Valid User user,
                                                  BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            System.out.println("!!!Has errors!!!");
+        if (userService.findByUsername(user.getUsername()) != null || bindingResult.hasErrors()) {
+            throw new ValidationUserException("Error: User can't be create. Validation error");
         }
         System.out.println(user);
         userService.saveOrUpdateUser(user);
@@ -56,8 +57,10 @@ public class RESTController {
     @CrossOrigin
     public ResponseEntity<List<User>> updateUser(@RequestBody @Valid User user,
                                                  BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            System.out.println("!!!Has errors!!!");
+        if ((userService.findByUsername(user.getUsername()) != null &&
+                userService.findByUsername(user.getUsername()).getId() != user.getId())
+                || bindingResult.hasErrors()) {
+            throw new ValidationUserException("Error: User can't be create. Validation error");
         }
         userService.saveOrUpdateUser(user);
         return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
