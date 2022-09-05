@@ -112,7 +112,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return age == user.age && Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles) && Objects.equals(firstname, user.firstname) && Objects.equals(lastname, user.lastname);
+        return Objects.equals(id, user.id);
     }
 
     @Override
