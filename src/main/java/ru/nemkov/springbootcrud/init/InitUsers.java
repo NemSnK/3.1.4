@@ -9,6 +9,7 @@ import ru.nemkov.springbootcrud.model.User;
 import ru.nemkov.springbootcrud.service.RoleService;
 import ru.nemkov.springbootcrud.service.UserService;
 
+import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,8 +26,8 @@ public class InitUsers {
         this.roleService = roleService;
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void initialization() {
+    @PostConstruct
+    public void createUsers() {
 
         Set<Role> role = new HashSet<>();
         role.add(new Role(1L, "ROLE_ADMIN"));
