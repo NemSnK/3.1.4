@@ -18,14 +18,21 @@ public class WelcomeController {
     public WelcomeController(UserService userService) {
         this.userService = userService;
     }
+
     @GetMapping("/admin")
     public String showAdminPage(Principal principal, Model model) {
         model.addAttribute("user", userService.findByUsername(principal.getName()));
         return "admin";
     }
+
     @GetMapping("/user")
     public String showUserPage(Principal principal, Model model) {
         model.addAttribute("user", userService.findByUsername(principal.getName()));
         return "user";
+    }
+
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "login";
     }
 }

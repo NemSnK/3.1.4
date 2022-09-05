@@ -1,4 +1,4 @@
-package init;
+package ru.nemkov.springbootcrud.init;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
