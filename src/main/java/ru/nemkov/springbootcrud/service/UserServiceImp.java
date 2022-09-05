@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.nemkov.springbootcrud.exeption_handling.NoSuchUserException;
+import ru.nemkov.springbootcrud.exeption_handling.ValidationUserException;
 import ru.nemkov.springbootcrud.model.Role;
 import ru.nemkov.springbootcrud.model.User;
 import ru.nemkov.springbootcrud.repository.UserRepository;
@@ -22,7 +24,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class UserServiceImp implements UserService, UserDetailsService {
     private final UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     @Lazy
@@ -33,7 +35,21 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     @Transactional
     @Override
-    public void saveOrUpdateUser(User user) {
+    public void saveUser(User user) {
+        if (findByUsername(user.getUsername()) != null) {
+            throw new ValidationUserException("this email already exists");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void updateUser(User user) {
+        if (findByUsername(user.getUsername()) != null &&
+                findByUsername(user.getUsername()).getId() != user.getId()) {
+            throw new ValidationUserException("this email already exists");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
@@ -70,6 +86,9 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Transactional
     @Override
     public void removeUser(Long id) {
+        if (getUserById(id) == null) {
+            throw new NoSuchUserException(String.format("There is no user with ID = %d in Database", id));
+        }
         userRepository.deleteById(id);
     }
 }

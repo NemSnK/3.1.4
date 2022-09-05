@@ -7,8 +7,8 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 public interface UserService {
-    void saveOrUpdateUser(User user);
-
+    void saveUser(User user);
+    void updateUser(User user);
     List<User> getUserList();
 
     User findByUsername(String username);

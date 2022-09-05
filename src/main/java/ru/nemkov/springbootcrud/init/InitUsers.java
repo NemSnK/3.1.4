@@ -16,35 +16,36 @@ import java.util.Set;
 @Component
 public class InitUsers {
 
-  private final UserService userService;
-  private final RoleService roleService;
+    private final UserService userService;
+    private final RoleService roleService;
+
     @Autowired
     public InitUsers(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
-    @EventListener(ApplicationReadyEvent.class)
-    public void initialization(){
 
-        Set<Role>  role= new HashSet<>();
-        role.add(new Role(1L, "ROLE_USER"));
-        role.add(new Role(2L, "ROLE_ADMIN"));
+    @EventListener(ApplicationReadyEvent.class)
+    public void initialization() {
+
+        Set<Role> role = new HashSet<>();
+        role.add(new Role(1L, "ROLE_ADMIN"));
+        role.add(new Role(2L, "ROLE_USER"));
 
         System.out.println("Start init");
-        User user = new User("user@mail.ru", "123",
-                Collections.singleton(new Role(1L, "ROLE_USER")),
-                "Userfirstname", "Userlastname", (byte) 25);
         User admin = new User("admin@mail.ru", "123",
-                Collections.singleton(new Role(2L, "ROLE_ADMIN")),
+                Collections.singleton(new Role(1L, "ROLE_ADMIN")),
                 "Adminfirstname", "Adminlastname", (byte) 35);
-
+        User user = new User("user@mail.ru", "123",
+                Collections.singleton(new Role(2L, "ROLE_USER")),
+                "Userfirstname", "Userlastname", (byte) 25);
         User duoRoles = new User("pupkin@mail.ru", "123",
-                role,"Vasia", "Pupkin", (byte) 35);
-        roleService.addRole(new Role(1L, "ROLE_USER"));
-        roleService.addRole(new Role(2L, "ROLE_ADMIN"));
-        userService.saveOrUpdateUser(user);
-        userService.saveOrUpdateUser(admin);
-        userService.saveOrUpdateUser(duoRoles);
+                role, "Vasia", "Pupkin", (byte) 35);
+        roleService.addRole(new Role(1L, "ROLE_ADMIN"));
+        roleService.addRole(new Role(2L, "ROLE_USER"));
+        userService.saveUser(user);
+        userService.saveUser(admin);
+        userService.saveUser(duoRoles);
         System.out.println("End init");
     }
 }

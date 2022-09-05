@@ -6,73 +6,62 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import ru.nemkov.springbootcrud.exeption_handling.NoSuchUserException;
 import ru.nemkov.springbootcrud.exeption_handling.ValidationUserException;
 import ru.nemkov.springbootcrud.model.User;
 import ru.nemkov.springbootcrud.service.UserService;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMIN')")
-public class RESTController {
+public class AdminRESTController {
     private UserService userService;
 
     @Autowired
-    public RESTController(UserService userService) {
+    public AdminRESTController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping()
-    @CrossOrigin
+    @RequestMapping("/")
+    public ModelAndView showAdminPage(Principal principal) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("user", userService.findByUsername(principal.getName()));
+        modelAndView.setViewName("admin.html");
+        return modelAndView;
+    }
+
+    @GetMapping("/api")
     public ResponseEntity<List<User>> getUsers() {
         return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    @CrossOrigin
-    public User getUser(@PathVariable Long id) {
-        User user = userService.getUserById(id);
-        if (user == null) {
-            throw new NoSuchUserException(String.format("There is no user with ID = %d in Database", id));
-        }
-        return user;
-    }
-
-    @PostMapping()
-    @CrossOrigin
+    @PostMapping("/api")
     public ResponseEntity<List<User>> createUser(@RequestBody @Valid User user,
                                                  BindingResult bindingResult) {
-        if (userService.findByUsername(user.getUsername()) != null || bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             throw new ValidationUserException("Error: User can't be create. Validation error");
         }
-        System.out.println(user);
-        userService.saveOrUpdateUser(user);
+        userService.saveUser(user);
         return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
 
-    @PutMapping()
-    @CrossOrigin
+    @PutMapping("/api")
     public ResponseEntity<List<User>> updateUser(@RequestBody @Valid User user,
                                                  BindingResult bindingResult) {
-        if ((userService.findByUsername(user.getUsername()) != null &&
-                userService.findByUsername(user.getUsername()).getId() != user.getId())
-                || bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             throw new ValidationUserException("Error: User can't be create. Validation error");
         }
-        userService.saveOrUpdateUser(user);
+        userService.updateUser(user);
         return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    @CrossOrigin
+    @DeleteMapping("api/{id}")
     public ResponseEntity<List<User>> deleteUser(@PathVariable Long id) {
-        User user = userService.getUserById(id);
-        if (user == null) {
-            throw new NoSuchUserException(String.format("There is no user with ID = %d in Database", id));
-        }
         userService.removeUser(id);
         return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
